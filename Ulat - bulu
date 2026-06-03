@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Game Ulat Bulu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { background: #c8f0c8; text-align: center; font-family: 'Comic Sans MS'; margin: 0; padding: 20px; }
+canvas { border: 4px solid #2e7d32; border-radius: 15px; background: #e8f5e9; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+h1 { color: #1b5e20; margin-bottom: 10px; }
+#score { font-size: 24px; color: #d32f2f; font-weight: bold; margin: 10px; }
+button { padding: 12px 25px; font-size: 18px; background: #4caf50; color: white; border: none; border-radius: 10px; margin: 5px; }
+button:active { background: #388e3c; }
+</style>
+</head>
+<body>
+<h1>🐛 Ulat Bulu Makan Daun 🍃</h1>
+<div id="score">Skor: 0</div>
+<canvas id="game" width="320" height="420"></canvas><br>
+<button onclick="moveLeft()">⬅️ Kiri</button>
+<button onclick="moveRight()">Kanan ➡️</button>
+
+<script>
+let c = document.getElementById('game').getContext('2d');
+let ulat = [{x: 160, y: 350}];
+let daun = {x: Math.random()*280+20, y: Math.random()*200+50};
+let skor = 0;
+let arah = 1;
+
+function gambar() {
+c.clearRect(0,0,320,420);
+c.fillStyle = '#81c784';
+c.fillRect(0,380,320,40);
+
+c.fillStyle = '#388e3c';
+c.beginPath();
+c.ellipse(daun.x, daun.y, 25, 18, 0, 0, Math.PI*2);
+c.fill();
+c.fillStyle = '#2e7d32';
+c.fillRect(daun.x-2, daun.y, 4, 20);
+
+for(let i=0; i<ulat.length; i++) {
+c.fillStyle = i==0? '#ff6f00' : '#ffa726';
+c.beginPath();
+c.arc(ulat[i].x, ulat[i].y, 14, 0, Math.PI*2);
+c.fill();
+if(i==0) {
+c.fillStyle = 'white'; c.arc(ulat[i].x-5, ulat[i].y-3, 4, 0, Math.PI*2); c.fill();
+c.fillStyle = 'black'; c.arc(ulat[i].x-5, ulat[i].y-3, 2, 0, Math.PI*2); c.fill();
+}
+}
+
+ulat[0].x += arah * 2;
+if(ulat[0].x > 300 || ulat[0].x < 20) arah = -arah;
+
+let dx = ulat[0].x - daun.x;
+let dy = ulat[0].y - daun.y;
+if(Math.sqrt(dx*dx + dy*dy) < 30) {
+skor += 10;
+document.getElementById('score').innerText = 'Skor: ' + skor;
+ulat.push({x: ulat[ulat.length-1].x, y: ulat[ulat.length-1].y + 18});
+daun = {x: Math.random()*280+20, y: Math.random()*200+50};
+}
+
+requestAnimationFrame(gambar);
+}
+
+function moveLeft() { arah = -1; }
+function moveRight() { arah = 1; }
+
+gambar();
+</script>
+</body>
+</html>
